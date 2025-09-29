@@ -161,8 +161,8 @@ $user = mysqli_fetch_assoc($result_user);
                                         <div class="form-group row">
                                             <label class="col-sm-3 col-form-label">Nilai Kuitansi</label>
                                             <div class="col-sm-9">
-                                                <input type="number" name="nilai_kuitansi" class="form-control" placeholder="Nilai Kuitansi"
-                                                    value="<?php echo htmlspecialchars($berkas['nilai_kuitansi']); ?>" readonly>
+                                                <input type="text" name="nilai_kuitansi" class="form-control" placeholder="Nilai Kuitansi"
+                                                    value="<?php echo 'Rp ' . number_format($berkas['nilai_kuitansi'], 0, ',', '.'); ?>" readonly>
                                             </div>
                                         </div>
 

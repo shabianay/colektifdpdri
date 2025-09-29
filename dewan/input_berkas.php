@@ -43,10 +43,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nomor_telpon   = $_POST["nomor_telpon"];
     $atas_nama      = $_POST["atas_nama"];
     $jumlah_kuitansi = $_POST["jumlah_kuitansi"];
-    $nilai_kuitansi = $_POST["nilai_kuitansi"];
+
+    // Hapus format rupiah sebelum disimpan ke database
+    $nilai_kuitansi = str_replace(['Rp', '.', ' '], '', $_POST["nilai_kuitansi"]);
+
     $verifikator    = $_POST["verifikator"];
 
-    $query = "INSERT INTO berkas 
+    $query = "INSERT INTO berkas_dewan 
         (nomor_berkas, jenis_berkas, jenis_kontraktual, nomor_spp, keterangan, unit_kerja, ppk, nama_pengolah, nomor_telpon, atas_nama, jumlah_kuitansi, nilai_kuitansi, verifikator)
         VALUES 
         ('$nomor_berkas', '$jenis_berkas', " . ($jenis_kontraktual ? "'$jenis_kontraktual'" : "NULL") . ", '$nomor_spp', '$keterangan', 
@@ -88,8 +91,33 @@ $user = mysqli_fetch_assoc($result);
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet" />
 
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
     <!-- Custom styles for this template-->
     <link href="../css/sb-admin-2.css" rel="stylesheet">
+
+    <style>
+        .select2-container--default .select2-selection--single {
+            height: 38px;
+            padding: 6px 12px;
+            border: 1px solid #d1d3e2;
+            border-radius: 0.35rem;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 24px;
+            color: #6e707e;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+    </style>
 </head>
 
 <body id="page-top">
@@ -160,7 +188,7 @@ $user = mysqli_fetch_assoc($result);
                                         </div>
                                         <div class="form-group">
                                             <label>Unit Kerja</label>
-                                            <select name="unit_kerja" class="form-control">
+                                            <select name="unit_kerja" id="unitKerja" class="form-control select2">
                                                 <option>Unit Kerja</option>
                                                 <option>Deputi Bidang Administrasi</option>
                                                 <option>Deputi Bidang Persidangan</option>
@@ -285,7 +313,7 @@ $user = mysqli_fetch_assoc($result);
                                         </div>
                                         <div class="form-group">
                                             <label>Nilai Kuitansi</label>
-                                            <input type="number" name="nilai_kuitansi" class="form-control" placeholder="Nilai Kuitansi">
+                                            <input type="text" name="nilai_kuitansi" id="nilaiKuitansi" class="form-control" placeholder="Rp 0">
                                         </div>
                                         <div class="form-group">
                                             <label>Verifikator</label>
@@ -319,21 +347,6 @@ $user = mysqli_fetch_assoc($result);
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <script>
-        document.getElementById("jenisBerkas").addEventListener("change", function() {
-            let value = this.value;
-            let pengajuanFields = document.getElementById("pengajuanFields");
-
-            if (value === "Pengajuan") {
-                pengajuanFields.style.display = "block";
-            } else {
-                pengajuanFields.style.display = "none";
-                // reset value biar gak keikut saat bukan pengajuan
-                document.querySelectorAll('input[name="jenis_kontraktual"]').forEach(el => el.checked = false);
-            }
-        });
-    </script>
-
     <!-- Bootstrap core JavaScript-->
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -350,6 +363,56 @@ $user = mysqli_fetch_assoc($result);
 
     <!-- Page level custom scripts -->
     <script src="../js/demo/datatables-demo.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        // Fungsi untuk menampilkan/menyembunyikan field pengajuan
+        document.getElementById("jenisBerkas").addEventListener("change", function() {
+            let value = this.value;
+            let pengajuanFields = document.getElementById("pengajuanFields");
+
+            if (value === "Pengajuan") {
+                pengajuanFields.style.display = "block";
+            } else {
+                pengajuanFields.style.display = "none";
+                // reset value biar gak keikut saat bukan pengajuan
+                document.querySelectorAll('input[name="jenis_kontraktual"]').forEach(el => el.checked = false);
+            }
+        });
+
+        // Format Rupiah untuk Nilai Kuitansi
+        const nilaiKuitansi = document.getElementById('nilaiKuitansi');
+
+        function formatRupiah(angka) {
+            let number_string = angka.replace(/[^,\d]/g, '').toString();
+            let split = number_string.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return rupiah ? 'Rp ' + rupiah : '';
+        }
+
+        nilaiKuitansi.addEventListener('keyup', function(e) {
+            nilaiKuitansi.value = formatRupiah(this.value);
+        });
+
+        // Inisialisasi Select2 untuk Unit Kerja
+        $(document).ready(function() {
+            $('#unitKerja').select2({
+                placeholder: "-- Pilih atau Cari Unit Kerja --",
+                allowClear: true
+            });
+        });
+    </script>
 </body>
 
 </html>

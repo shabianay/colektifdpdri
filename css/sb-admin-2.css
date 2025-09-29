@@ -11861,3 +11861,10 @@ body.sidebar-toggled footer.sticky-footer {
     right: 10px;
   }
 }
+
+.dataTable tbody tr:hover {
+  background-color: #f0f8ff !important;
+}
+.dataTable tbody tr {
+  transition: background-color 0.3s ease;
+}

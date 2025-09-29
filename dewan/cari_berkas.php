@@ -146,7 +146,7 @@ $result = mysqli_query($koneksi, $query);
             color: #5a5c69;
             margin-bottom: 0.5rem;
         }
-    </style>1 
+    </style>
 </head>
 
 <body id="page-top">
@@ -197,8 +197,99 @@ $result = mysqli_query($koneksi, $query);
                                         <label for="unit_kerja">Unit Kerja</label>
                                         <select class="form-control" id="unit_kerja" name="unit_kerja">
                                             <option value="">Pilih Unit Kerja</option>
-                                            <option value="Unit A" <?php echo (($_GET['unit_kerja'] ?? '') == 'Unit A') ? 'selected' : ''; ?>>Unit A</option>
-                                            <option value="Unit B" <?php echo (($_GET['unit_kerja'] ?? '') == 'Unit B') ? 'selected' : ''; ?>>Unit B</option>
+                                            <?php
+                                            $unit_kerja_list = [
+                                                "Deputi Bidang Administrasi",
+                                                "Deputi Bidang Persidangan",
+                                                "Pusperjakum",
+                                                "Puskadaran",
+                                                "Inspektorat",
+                                                "Biro Persidangan I",
+                                                "Komite I",
+                                                "Komite III",
+                                                "PPUU",
+                                                "BULD",
+                                                "BKSP",
+                                                "Biro Persidangan II",
+                                                "Komite II",
+                                                "Komite IV",
+                                                "Panmus",
+                                                "Pansus",
+                                                "Bagian Sekretariat BK",
+                                                "Bagian Sekretariat PURT",
+                                                "Bagian Sekretariat Badan Akuntabilitas Publik",
+                                                "Biro Sekretariat Pimpinan",
+                                                "Bagian Sekretariat Ketua",
+                                                "Bagian Sekretariat Waka I",
+                                                "Bagian Sekretariat Waka II",
+                                                "Biro Perencanaan dan keuangan",
+                                                "Bagian Perencanaan",
+                                                "Bagian Administrasi, Gaji, Tunjangan dan Honorarium",
+                                                "Bagian Perbendaharaan",
+                                                "Bagian Akuntansi dan Pelaporan",
+                                                "Biro Sistem Informasi dan Dokumentasi",
+                                                "Bagian Pengelolaan Sistem Informasi",
+                                                "Bagian Risalah",
+                                                "Bagian Kearsipan, Perpustakaan, dan Penerbitan",
+                                                "Bagian Pengelolaan Barang Milik Negara",
+                                                "Biro Umum",
+                                                "Bagian Pemeliharaan dan Perlengkapan",
+                                                "Bagian Layanan dan Pengadaan",
+                                                "Bagian Pengamanan Dalam",
+                                                "Biro Protokol, Hubungan, Masyarakat, dan Media",
+                                                "Bagian Protokol",
+                                                "Bagian Hubungan Masyarakat dan Fasilitasi Pengaduan",
+                                                "Bagian Pemberitaan dan Media",
+                                                "Biro OKK",
+                                                "Bagian OKK",
+                                                "Bagian AKK",
+                                                "Bagian PSDM",
+                                                "Bagian Hukum",
+                                                "ACEH",
+                                                "Sumatera Utara",
+                                                "Sumatera Barat",
+                                                "Riau",
+                                                "Jambi",
+                                                "Sumatera Selatan",
+                                                "Bengkulu",
+                                                "Lampung",
+                                                "Bangka Belitung",
+                                                "Kepulauan Riau",
+                                                "DKI JKT",
+                                                "Jawa Barat",
+                                                "Jawa Tengah",
+                                                "D.I Yogyakarta",
+                                                "Jawa Timur",
+                                                "Banten",
+                                                "Bali",
+                                                "NTB",
+                                                "NTT",
+                                                "Kalimantan Barat",
+                                                "Kalimantan Tengah",
+                                                "Kalimantan Selatan",
+                                                "Kalimantan Timur",
+                                                "Kalimantan Utara",
+                                                "Sulawesi Utara",
+                                                "Sulawesi Tengah",
+                                                "Sulawesi Selatan",
+                                                "Sultra",
+                                                "Gorontalo",
+                                                "Sulawesi Barat",
+                                                "Maluku",
+                                                "Maluku Utara",
+                                                "Papua",
+                                                "Papua Barat",
+                                                "Papua Selatan",
+                                                "Papua Tengah",
+                                                "Papua Pegunungan",
+                                                "Papua Barat Daya"
+                                            ];
+
+                                            foreach ($unit_kerja_list as $u) {
+                                                $sel = (($_GET['unit_kerja'] ?? '') == $u) ? 'selected' : '';
+                                                echo "<option value=\"$u\" $sel>$u</option>";
+                                            }
+                                            ?>
                                         </select>
                                     </div>
                                     <div class="form-group col-md-3">

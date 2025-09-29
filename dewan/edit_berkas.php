@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nomor_telpon   = $_POST["nomor_telpon"];
     $atas_nama      = $_POST["atas_nama"];
     $jumlah_kuitansi = $_POST["jumlah_kuitansi"];
-    $nilai_kuitansi = $_POST["nilai_kuitansi"];
+    $nilai_kuitansi  = preg_replace('/[^0-9]/', '', $_POST["nilai_kuitansi"]); // hapus Rp, titik, dll
     $verifikator    = $_POST["verifikator"];
 
     $query = "UPDATE berkas SET
@@ -333,8 +333,8 @@ $user = mysqli_fetch_assoc($result_user);
 
                                         <div class="form-group">
                                             <label>Nilai Kuitansi</label>
-                                            <input type="number" name="nilai_kuitansi" class="form-control" placeholder="Nilai Kuitansi"
-                                                value="<?php echo htmlspecialchars($berkas['nilai_kuitansi']); ?>">
+                                            <input type="text" name="nilai_kuitansi" class="form-control" placeholder="Nilai Kuitansi"
+                                                value="<?php echo 'Rp ' . number_format($berkas['nilai_kuitansi'], 0, ',', '.'); ?>">
                                         </div>
 
                                         <div class="form-group">
@@ -363,20 +363,6 @@ $user = mysqli_fetch_assoc($result_user);
         </div>
     </div>
 
-    <script>
-        document.getElementById("jenisBerkas").addEventListener("change", function() {
-            let value = this.value;
-            let pengajuanFields = document.getElementById("pengajuanFields");
-
-            if (value === "Pengajuan") {
-                pengajuanFields.style.display = "block";
-            } else {
-                pengajuanFields.style.display = "none";
-                document.querySelectorAll('input[name="jenis_kontraktual"]').forEach(el => el.checked = false);
-            }
-        });
-    </script>
-
     <!-- Bootstrap core JavaScript-->
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -393,6 +379,54 @@ $user = mysqli_fetch_assoc($result_user);
 
     <!-- Page level custom scripts -->
     <script src="../js/demo/datatables-demo.js"></script>
+
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <script>
+        document.getElementById("jenisBerkas").addEventListener("change", function() {
+            let value = this.value;
+            let pengajuanFields = document.getElementById("pengajuanFields");
+
+            if (value === "Pengajuan") {
+                pengajuanFields.style.display = "block";
+            } else {
+                pengajuanFields.style.display = "none";
+                document.querySelectorAll('input[name="jenis_kontraktual"]').forEach(el => el.checked = false);
+            }
+        });
+
+        // Format Rupiah untuk Nilai Kuitansi
+        const nilaiKuitansi = document.getElementById('nilaiKuitansi');
+
+        function formatRupiah(angka) {
+            let number_string = angka.replace(/[^,\d]/g, '').toString();
+            let split = number_string.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return rupiah ? 'Rp ' + rupiah : '';
+        }
+
+        nilaiKuitansi.addEventListener('keyup', function(e) {
+            nilaiKuitansi.value = formatRupiah(this.value);
+        });
+
+        // Inisialisasi Select2 untuk Unit Kerja
+        $(document).ready(function() {
+            $('#unitKerja').select2({
+                placeholder: "-- Pilih atau Cari Unit Kerja --",
+                allowClear: true
+            });
+        });
+    </script>
 </body>
 
 </html>
