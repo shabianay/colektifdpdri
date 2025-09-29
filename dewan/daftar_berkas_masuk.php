@@ -127,7 +127,7 @@ $user = mysqli_fetch_assoc($result);
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $query = "SELECT * FROM berkas ORDER BY created_at DESC";
+                                        $query = "SELECT * FROM berkas_dewan ORDER BY created_at DESC";
                                         $result = mysqli_query($koneksi, $query);
                                         $counter = 0;
 

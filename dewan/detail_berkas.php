@@ -35,7 +35,7 @@ if (!isset($_GET['id'])) {
 $berkas_id = $_GET['id'];
 
 // Ambil data berkas dari database
-$query_berkas = "SELECT * FROM berkas WHERE id = $berkas_id";
+$query_berkas = "SELECT * FROM berkas_dewan WHERE id = $berkas_id";
 $result_berkas = mysqli_query($koneksi, $query_berkas);
 
 if (!$result_berkas || mysqli_num_rows($result_berkas) == 0) {

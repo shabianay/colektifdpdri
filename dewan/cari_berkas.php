@@ -93,7 +93,7 @@ if (!empty($where_conditions)) {
     $where_clause = "WHERE " . implode(" AND ", $where_conditions);
 }
 
-$query = "SELECT * FROM berkas $where_clause ORDER BY created_at DESC";
+$query = "SELECT * FROM berkas_dewan $where_clause ORDER BY created_at DESC";
 $result = mysqli_query($koneksi, $query);
 ?>
 <!DOCTYPE html>

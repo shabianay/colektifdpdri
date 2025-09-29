@@ -35,7 +35,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 $id = intval($_GET['id']);
 
 // Verifikasi bahwa berkas ada sebelum dihapus
-$check_query = "SELECT id FROM berkas WHERE id = $id";
+$check_query = "SELECT id FROM berkas_dewan WHERE id = $id";
 $check_result = mysqli_query($koneksi, $check_query);
 
 if (mysqli_num_rows($check_result) == 0) {
@@ -45,7 +45,7 @@ if (mysqli_num_rows($check_result) == 0) {
 }
 
 // Hapus data
-$delete_query = "DELETE FROM berkas WHERE id = $id";
+$delete_query = "DELETE FROM berkas_dewan WHERE id = $id";
 $delete_result = mysqli_query($koneksi, $delete_query);
 
 if ($delete_result) {
