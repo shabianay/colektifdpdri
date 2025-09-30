@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         '$jumlah_kuitansi', '$nilai_kuitansi', '$verifikator')";
 
     if (mysqli_query($koneksi, $query)) {
-        echo "<script>alert('Data berhasil ditambahkan'); window.location='input_berkas.php';</script>";
+        echo "<script>alert('Data berhasil ditambahkan'); window.location='daftar_berkas_masuk.php';</script>";
     } else {
         echo "Error: " . mysqli_error($koneksi);
     }
